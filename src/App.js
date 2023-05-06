@@ -1,6 +1,6 @@
 // import logo from './logo.svg';
 import "./App.css";
-import React, { useState } from "react";
+import React from "react";
 
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue } from "firebase/database";
@@ -13,11 +13,11 @@ class App extends React.Component {
     initializeApp(config);
     this.database = getDatabase();
 
-    this.state = {};
+    this.state = {
+      data: [],
+      showing: false,
+    };
   }
-
-  // React state to manage visibility
-  state = { showing: true };
 
   componentDidMount() {
     this.getLists();
@@ -39,7 +39,7 @@ class App extends React.Component {
     const posts = ref(this.database, "counter");
     onValue(posts, (snapshot) => {
       const state = snapshot.val();
-      this.setState(state);
+      this.setState({data: state});
     });
   };
 
@@ -83,12 +83,8 @@ class App extends React.Component {
   //   this.refs.role.value = developer.role;
   // };
 
-  addQueueShow = () => {
-    this.setShow(!this.show);
-  };
-
   render() {
-    const data = Object.values(this.state);
+    const { data } = this.state; 
     const { showing } = this.state;
 
     return (
@@ -109,7 +105,7 @@ class App extends React.Component {
                 TAMBAH ANTRIAN
               </button>
               {showing ? (
-                <div className="mb-5" x-show="open">
+                <div className="mb-5">
                   <input
                     type="text"
                     placeholder="Masukkan nama antrian"
@@ -118,7 +114,10 @@ class App extends React.Component {
                   <button className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-1 mb-5 mr-1">
                     Simpan
                   </button>
-                  <button className="bg-slate-400 hover:bg-slate-500 text-white rounded-lg px-3 py-1 mb-5">
+                  <button
+                    className="bg-slate-400 hover:bg-slate-500 text-white rounded-lg px-3 py-1 mb-5"
+                    onClick={() => this.setState({ showing: !showing })}
+                  >
                     Batal
                   </button>
                 </div>
@@ -126,7 +125,7 @@ class App extends React.Component {
               <div className="grid grid-cols-4 gap-4">
                 {data.map((item) => (
                   <Counter
-                    key="{item.id}"
+                    key={item.id}
                     id={item.id}
                     currentQueue={item.queue.current}
                     nextQueue={item.queue.next}
@@ -140,6 +139,6 @@ class App extends React.Component {
       </>
     );
   }
-} 
+}
 
 export default App;
