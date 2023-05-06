@@ -3,13 +3,14 @@ import "./App.css";
 import React from "react";
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, set, onValue } from "firebase/database";
 import config from "./config";
 import Counter from "./Counter";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.nameRef = React.createRef();
     initializeApp(config);
     this.database = getDatabase();
 
@@ -24,50 +25,40 @@ class App extends React.Component {
     document.body.classList.add("bg-blue-100");
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevState !== this.state) {
-  //     this.writeUserData();
-  //   }
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState !== this.state) {
+      this.writeQueueData();
+    }
+  }
 
-  // writeUserData = () => {
-  //   getDatabase().ref("/").set(this.state);
-  //   console.log("DATA SAVED");
-  // };
+  writeQueueData = () => {
+    const { data } = this.state;
+    set(ref(this.database, "counter"), data);
+  };
 
   getLists = () => {
     const posts = ref(this.database, "counter");
     onValue(posts, (snapshot) => {
-      const state = snapshot.val();
-      this.setState({data: state});
+      const state = snapshot.val() ?? [];
+      this.setState({ data: state });
     });
   };
 
-  // handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   let name = this.refs.name.value;
-  //   let role = this.refs.role.value;
-  //   let uid = this.refs.uid.value;
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const id = new Date().getTime().toString();
+    let name = this.nameRef.current.value;
+    const queue = {
+      current: "001",
+      next: "002",
+    };
 
-  //   if (uid && name && role) {
-  //     const { developers } = this.state;
-  //     const devIndex = developers.findIndex((data) => {
-  //       return data.uid === uid;
-  //     });
-  //     developers[devIndex].name = name;
-  //     developers[devIndex].role = role;
-  //     this.setState({ developers });
-  //   } else if (name && role) {
-  //     const uid = new Date().getTime().toString();
-  //     const { developers } = this.state;
-  //     developers.push({ uid, name, role });
-  //     this.setState({ developers });
-  //   }
+    const { data } = this.state;
+    data.push({ id, name, queue });
+    this.setState({ data });
 
-  //   this.refs.name.value = "";
-  //   this.refs.role.value = "";
-  //   this.refs.uid.value = "";
-  // };
+    this.nameRef.current.value = "";
+  };
 
   // removeData = (developer) => {
   //   const { developers } = this.state;
@@ -84,7 +75,7 @@ class App extends React.Component {
   // };
 
   render() {
-    const { data } = this.state; 
+    const { data } = this.state;
     const { showing } = this.state;
 
     return (
@@ -106,20 +97,26 @@ class App extends React.Component {
               </button>
               {showing ? (
                 <div className="mb-5">
-                  <input
-                    type="text"
-                    placeholder="Masukkan nama antrian"
-                    className="bg-gray-50 border text-md border-gray-500 rounded-lg px-2 py-1 mr-1"
-                  />
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-1 mb-5 mr-1">
-                    Simpan
-                  </button>
-                  <button
-                    className="bg-slate-400 hover:bg-slate-500 text-white rounded-lg px-3 py-1 mb-5"
-                    onClick={() => this.setState({ showing: !showing })}
-                  >
-                    Batal
-                  </button>
+                  <form onSubmit={this.handleSubmit}>
+                    <input
+                      type="text"
+                      ref={this.nameRef}
+                      placeholder="Masukkan nama antrian"
+                      className="bg-gray-50 border text-md border-gray-500 rounded-lg px-2 py-1 mr-1"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-1 mb-5 mr-1"
+                    >
+                      Simpan
+                    </button>
+                    <button
+                      className="bg-slate-400 hover:bg-slate-500 text-white rounded-lg px-3 py-1 mb-5"
+                      onClick={() => this.setState({ showing: !showing })}
+                    >
+                      Batal
+                    </button>
+                  </form>
                 </div>
               ) : null}
               <div className="grid grid-cols-4 gap-4">
@@ -127,6 +124,7 @@ class App extends React.Component {
                   <Counter
                     key={item.id}
                     id={item.id}
+                    name={item.name}
                     currentQueue={item.queue.current}
                     nextQueue={item.queue.next}
                     previousQueue={item.queue.previous}

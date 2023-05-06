@@ -4,14 +4,20 @@ export default function Counter(props) {
   return (
     <div className="bg-blue-100 rounded-md px-5 py-3">
       <div className="flex flex-col">
-        <div>Antrian CS {props.id}</div>
+        {/* <div>{props.name}</div> */}
+        <div className="flex justify-between">
+          <div className="order-first ">{props.name}</div>{" "}
+          <div className="">
+            <SoundIcon className="mx-auto border hover:border-sky-500" />
+          </div>
+        </div>
         <div className="text-center py-8">
           <span className="block">Antrian</span>
           <span className="text-3xl">
             {props.currentQueue}
-            <a href="/">
+            {/* <a href="/">
               <SoundIcon className="mx-auto border hover:border-sky-500" />
-            </a>
+            </a> */}
           </span>
         </div>
         <div>
