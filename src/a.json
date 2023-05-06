@@ -1,0 +1,49 @@
+{
+  "counter": [
+    {
+      "id": 1,
+      "name": "Antrian CS 1",
+      "queue": {
+        "current": "001",
+        "next": "002",
+        "previous": null
+      }
+    },
+    {
+      "id": 2,
+      "name": "Antrian CS 2",
+      "queue": {
+        "current": "002",
+        "next": "003",
+        "previous": "001"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Antrian CS 3",
+      "queue": {
+        "current": "003",
+        "next": "004",
+        "previous": "002"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Antrian CS 4",
+      "queue": {
+        "current": "004",
+        "next": "005",
+        "previous": "003"
+      }
+    },
+    {
+      "id": 5,
+      "name": "Antrian CS 5",
+      "queue": {
+        "current": "005",
+        "next": "006",
+        "previous": "004"
+      }
+    }
+  ]
+}
