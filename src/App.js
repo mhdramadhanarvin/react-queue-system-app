@@ -60,6 +60,7 @@ class App extends React.Component {
     const index = data.indexOf(item);
     const list = item.queue.list;
 
+    // save next queue
     const next = list
       ? list[list.length - 1] + 1
       : parseInt(item.queue.current) + 1;
@@ -67,6 +68,7 @@ class App extends React.Component {
 
     if (!item.queue.next) item.queue.next = next;
 
+    // save state and show alert sucess
     data[index] = item;
     const alert = {
       message: `Berhasil mencetak nomor antrian ${next} untuk ${item.name}`,
@@ -75,6 +77,7 @@ class App extends React.Component {
     this.setState({ data, alert });
     this.writeQueueData();
 
+    // timeout for hide the alert
     setTimeout(() => {
       this.setState({
         alert: null,
@@ -92,17 +95,8 @@ class App extends React.Component {
     item.queue.current = list[indexInList + 1];
     item.queue.next = list[indexInList + 2] ?? null;
     item.queue.previous = list[indexInList];
-    // listPrevious.push(item.queue.current)
-    // item.queue.previous = item.queue.current;
-    // if (!listPrevious) {
-    //   item.queue.listPrevious = [item.queue.current];
-    // } else {
-    //   listPrevious.unshift(item.que3ue.current);
-    // }
-    // item.queue.current = listNext[0];
-    // item.queue.next = listNext[1] ?? null;
-    // listNext.shift();
 
+    // save state
     data[index] = item;
 
     this.setState({ data });
@@ -112,10 +106,19 @@ class App extends React.Component {
   goToPreviousQueue = (item) => {
     const { data } = this.state;
     const index = data.indexOf(item);
-    const listPrevious = item.queue.listPrevious ?? [];
-    const listNext = item.queue.listNext ?? [];
+    const list = item.queue.list;
 
-    console.log({ listPrevious, listNext });
+    // modify current item
+    const indexInList = list.indexOf(item.queue.current);
+    item.queue.current = list[indexInList - 1];
+    item.queue.next = list[indexInList];
+    item.queue.previous = list[indexInList - 2] ?? null;
+
+    // save state
+    data[index] = item;
+
+    this.setState({ data });
+    this.writeQueueData();
   };
 
   render() {
