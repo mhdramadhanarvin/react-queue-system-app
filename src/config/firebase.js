@@ -23,7 +23,10 @@
 //   console.log(data)
 // });
 
-const config = {
+import { initializeApp } from "firebase/app"
+import { getDatabase } from "firebase/database"
+
+const firebaseConfig = {
   apiKey: "AIzaSyBjguO9RRY2tRj2X7TBMnDgS88JFlBitq8",
   authDomain: "queue-system-14052.firebaseapp.com",
   databaseURL: "https://queue-system-14052-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -32,6 +35,8 @@ const config = {
   messagingSenderId: "926708631666",
   appId: "1:926708631666:web:40aae05c92fbdce15d1aeb",
   measurementId: "G-82QHR30YHM"
-};
+}
 
-export default config;
+// export default firebase; 
+initializeApp(firebaseConfig)
+export const database = getDatabase()
